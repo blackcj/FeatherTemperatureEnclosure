@@ -21,7 +21,7 @@ Enclosure built for use with the [Particle mesh](https://www.particle.io/mesh/) 
 
 ### v0.1
 
-![Render v0.1][images/render_v0.1.png]
+![Render v0.1](images/render_v0.1.png)
 
 This was a proof of concept to test venting and wall thickness. It turned out well but was too small (as expected). All vents looked good and printed without support. The lid fit snuggly around the base.
 
