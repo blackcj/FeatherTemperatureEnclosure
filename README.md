@@ -19,6 +19,20 @@ Enclosure built for use with the [Particle mesh](https://www.particle.io/mesh/) 
 
 ## Versions
 
+### v0.2
+
+![Render v0.2](images/render_v0.2.png)
+
+After adding the battery holder and feather board mounts, it's clear the circular enclosure is going to be too big. The next version will be a rounded rectangle to maximize space. Both the battery holder and screw mounts were the correct size but the micro usb opening was in the wrong position. This will be corrected in the next version.
+
+**Settings**
+
+Same as v0.1
+
+**Time to print**
+
+I stopped the print half way through so the total time is unknown.
+
 ### v0.1
 
 ![Render v0.1](images/render_v0.1.png)

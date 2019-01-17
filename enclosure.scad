@@ -1,11 +1,39 @@
 // Global config variables
-enclosure_height = 32;
-enclosure_radius = 30;
+enclosure_height = 25;
+enclosure_radius = 54;
 wall_thickness = 1;
 $fn = 180; // curved resolution (used for cylinders and spheres)
 
-buildBase();
-buildLidWithVents();
+module batteryHolder() {
+    difference() {
+        translate([0,0,1]) {
+            cube([75.46, 24, 11]);
+        }
+        translate([2,12,12]) {
+
+            rotate(90, [0,0,1]) {
+                rotate(90, [1,0,0]) {
+                    #cylinder(r=9.35, h=71);
+                }
+            }
+        }
+        translate([70.5,-1,6]) {
+            cube([2.5,8,8]);
+        }
+        translate([2,-1,6]) {
+            //cube([2.5,8,6]);
+        }
+    }
+}
+difference() {
+    translate([54,54,0]) {
+        buildBase();
+    }
+    translate([34,0,-1]) {
+        cube([41,3,28]);
+    }
+}
+
 
 // Base of enclosure
 module buildBase() {
@@ -20,71 +48,126 @@ module buildBase() {
         }
 
         // Flat back for power hookup
-        translate([enclosure_radius - 5,-75,0]) {
-          cube([20,150,15]);
+        translate([enclosure_radius - 5,-10,5]) {
+          //cube([8,20,7]);
         }
-        // TODO: Try 1 mm sized holes, may need 1 mm spacing
-        // Mesh grid of cubes for airflow
-        rotate( 90, [0, 0, 1]) {
-            grid(2, 4);
-        }
-        rotate( 180, [0, 0, 1]) {
-            grid(3, 3);
-        }
-        rotate( 270, [0, 0, 1]) {
-            grid(4, 2);
+        translate([0,0,enclosure_height - 14]) {
+          radialVents(1.5, 5, 1.5, 4, enclosure_radius + 20);
         }
     }
 }
 
-// TODO: Try circles instead of squares for the grid
-// Grid for the base
-module grid(grid_size, numCubes) {
-    // TODO: The minimum grid spacing should be set to 2 (which is 1mm)
-    // Space holes at 1/2 the width apart
-    grid_spacing = grid_size * 1.5;
-    // TODO: Translating the grid should be moved to the buildBase module so that the grid can be re-used in other places.
-    // Translate the grid to the edge of the enclosure
-    translate([enclosure_radius - 8,0,5]) {
-        // Mesh grid for airflow
-        for ( i = [0 : numCubes] ){
-            for ( k = [0 : numCubes] ){
-                // Rotate by 45 degrees to avoid needing support when printing
-                rotate( 45, [1, 0, 0])
-                translate([0, grid_spacing * i, grid_spacing * k])
-                cube([10, grid_size, grid_size]);
+// Radial vents
+// ventSpacing in mm
+// horizontalSpacing in degrees (divisible by 360)
+module radialVents(verticalSpacing, horizontalSpacing, size, numRows, ventRadius) {
+    for ( m = [0 : numRows] ){
+        for ( k = [0 : 90] ){
+            // Rotate by 45 degrees to avoid needing support when printing
+            translate([0,0,m * verticalSpacing + 30]) {
+                offset = horizontalSpacing / 2;
+                rotate( k * horizontalSpacing - m * offset, [0, 0, 1]){
+                //translate([0, grid_spacing * i, grid_spacing * k])
+                    rotate( 45, [-1, 1, 0]) {
+                        cube([size, ventRadius, size]);
+                    }
+                }
             }
         }
     }
 }
 
-// Lid for the enclosure
-module buildLidWithVents() {
-    difference() {
-        // Draw the plain lid
-        lid();
-        // Horizontal vents for airflow
-        translate([-20,enclosure_radius*3 + 1,12]) {
-            rotate( 135, [1, 0, 0])
-            cube([40,3,24]);
+// Plate
+difference() {
+    translate([54,54,0]) {
+        cylinder(r=54, h=1.2, center=false);
+    }
+    translate([34,0,-1]) {
+        cube([41,3,12]);
+    }
+}
+difference() {
+    translate([46,7.2,0]) {
+        featherScrew();
+    }
+    translate([34,0,-1]) {
+        cube([41,3,12]);
+    }
+}
+
+translate([16,63,0]) {
+    rotate(0, [0,0,1]) {
+        batteryHolder();
+    }
+}
+// Micro usb slot
+difference() {
+    translate([36,3,0]) {
+        cube([36,1.6,enclosure_height]);
+    }
+    translate([50.9,2,11.2]) {
+        cube([7.7,4,2.7]);
+    }
+}
+
+// Featherboard
+translate([43.5,4.7,10]) {
+    //#cube([22.86,50.8,1.4]);
+}
+//cube([75.46,90,2]);
+
+module featherFriction() {
+    translate([0,0,0])screwmount();
+    translate([0,45.72,0])screwmount();
+    translate([17.78,45.72,0])screwmount();
+    translate([17.78,0,0])screwmount();
+}
+
+module featherScrew() {
+    translate([0,0,0])screwmountM25();
+    translate([0,45.72,0])screwmountM25();
+    translate([17.78,45.72,0])screwmountM25();
+    translate([17.78,0,0])screwmountM25();
+}
+
+module screwmountM25() {
+    translate([0,0,1.9]) {
+        rotate_extrude(convexivity = 10) {
+            translate([2.5,0,0]) {
+                intersection() {
+                    square(8);
+                    difference() {
+                        square(5, center = true);
+                        translate([4,4])circle(4);
+                    }
+                }
+            }
         }
-        translate([-20,enclosure_radius*3 + enclosure_radius - 13,-5]) {
-            rotate( 45, [1, 0, 0])
-            cube([40,3,24]);
+    }
+    cylinder(r=5, h=2);
+    difference() {
+        cylinder(r=2.5, h=10);
+        translate([0,0,4]) {
+            #cylinder(r=1.2, h=9);
         }
     }
 }
 
-// Plain lid
-module lid() {
-    // Move the lid so it doesn't collide with the base
-    translate([0,enclosure_radius*3,0]) {
-        inner_height = enclosure_height;
-        // Subtract 0.1 to ensure the lid fits (this may need to be adjusted)
-        inner_radius = enclosure_radius - (wall_thickness * 2) - 0.1;
-        cylinder(h = 4, r = enclosure_radius, center = false, $fn = 180);
-        translate([0,0,0]) {
-            cylinder(h = 9, r = inner_radius, center = false, $fn = 180);
+module screwmount() {
+ translate([0,0,2.8]) {
+        rotate_extrude(convexivity = 10) {
+            translate([2.5,0,0]) {
+                intersection() {
+                    square(8);
+                    difference() {
+                        square(5, center = true);
+                        translate([4,4])circle(4);
+                    }
+                }
+            }
         }
     }
+    cylinder(r=5, h=3);
+    cylinder(r=2.5, h=11);
+    cylinder(r=1.25, h=14);
 }
