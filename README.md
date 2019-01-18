@@ -19,6 +19,20 @@ Enclosure built for use with the [Particle mesh](https://www.particle.io/mesh/) 
 
 ## Versions
 
+### v0.3
+
+![Render v0.3](images/render_v0.3.png)
+
+Switching the design to a rectangle with rounded corners is a much better utilization of the space. The next step will be designing a place for the sensors to be mounted. The sensors will need some distance from the micro controller to avoid throwing off the temperature values.
+
+**Settings**
+
+Same as v0.1
+
+**Time to print**
+
+- Print time base: 2 hours 18 minutes
+
 ### v0.2
 
 ![Render v0.2](images/render_v0.2.png)
