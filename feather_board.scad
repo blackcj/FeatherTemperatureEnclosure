@@ -1,4 +1,4 @@
-$fn = 180; // curved resolution (used for cylinders and spheres)
+$fn = 64; // curved resolution (used for cylinders and spheres)
 
 rotate(180,[0,1,0]) featherBoard();
 
@@ -8,10 +8,10 @@ module featherBoard() {
         // PCB
         rcube([22.86,50.8,1.19], 2.5);
         // Holes for mounting
-        translate([2.54,2.54,-2])cylinder(r=1.35, h=14);;
-        translate([2.54,48.26,-2])cylinder(r=1.35, h=14);;
-        translate([20.32,48.26,-2])cylinder(r=1.35, h=14);;
-        translate([20.32,2.54,-2])cylinder(r=1.35, h=14);;
+        translate([2.54,2.54,-2])cylinder(r=1.4, h=14);;
+        translate([2.54,48.26,-2])cylinder(r=1.4, h=14);;
+        translate([20.32,48.26,-2])cylinder(r=1.4, h=14);;
+        translate([20.32,2.54,-2])cylinder(r=1.4, h=14);;
     }
     // Micro USB
     translate([7.43,-1.2,-2.6]) {

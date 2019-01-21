@@ -2,15 +2,15 @@ $fn = 64; // curved resolution (used for cylinders and spheres)
 
 // Add a ridge for increased stability
 difference(){
-    cube([100,60,7]);
-    translate([1.5,1.5,2])cube([97,57,8]);
+    cube([100,60,6]);
+    translate([1.5,1.5,1.4])cube([97,57,8]);
 }
 
-translate([6, 8, 0])featherFriction(1.3, 6);
+translate([6, 8, 0])featherFriction(1.35, 6);
 
-translate([41.56, 8, 0])featherFriction(1.1, 12);
+translate([41.56, 8, 0])featherFriction(1.2, 12);
 
-translate([77.12, 8, 0])featherFriction(1, 24);
+translate([77.12, 8, 0])featherFriction(1.1, 24);
 
 module featherFriction(pegRadius, resolution) {
     translate([0,0,0])frictionmount(pegRadius, resolution);
@@ -35,6 +35,6 @@ module frictionmount(pegRadius, resolution) {
         }    
     }   
     cylinder(r=5, h=3);
-    cylinder(r=2.5, h=11);
-    cylinder(r=pegRadius, h=14, $fn = resolution);
+    cylinder(r=2.5, h=12);
+    cylinder(r=pegRadius, h=15, $fn = resolution);
 }
