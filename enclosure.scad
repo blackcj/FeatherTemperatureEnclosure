@@ -1,10 +1,10 @@
 // Global config variables
-enclosure_height = 25;
-enclosure_length = 78;
-enclosure_width = 63;
+enclosure_height = 28;
+enclosure_length = 92;
+enclosure_width = 66;
 enclosure_radius = 40;
 wall_thickness = 1.6;
-$fn = 180; // curved resolution (used for cylinders and spheres)
+$fn = 64; // curved resolution (used for cylinders and spheres)
 
 
 // Position all of the modules
@@ -12,10 +12,9 @@ $fn = 180; // curved resolution (used for cylinders and spheres)
 difference() {
     buildBase();
     // Micro usb slot
-    translate([34.9,-1,7])cube([8.2,4,3.3]);
-    translate([34.33,19.42,-1])cylinder(r=2, h=14);
-    translate([38.83,19.42,-1])cylinder(r=1, h=14);
-    translate([43.33,19.42,-1])cylinder(r=2, h=14);
+    translate([34.9,-1,7.1])cube([8.2,4,3.5]);
+    // Hole on the bottom of the enclosure
+    translate([30,10,-1])rcube([18,32,10], 5);
 }
 
 difference() {
@@ -49,7 +48,7 @@ module batteryHolder() {
                 }
             }
         }
-        translate([70.5,-1,6]) {
+        translate([69.5,-1,6]) {
             cube([2.5,8,8]);
         }
         translate([2,-1,6]) {
@@ -71,6 +70,11 @@ module rcube(size, radius) {
 
 // Base of enclosure
 module buildBase() {
+    translate([0, enclosure_length,0]) {
+        
+        platform();
+    }
+    
     // Cylinder with a smaller cylinder cut out of it
     difference() {
         rcube([enclosure_width,enclosure_length,enclosure_height], 10);
@@ -88,18 +92,47 @@ module buildBase() {
         translate([enclosure_radius - 5,-10,5]) {
           //cube([8,20,7]);
         }
-        translate([enclosure_width / 2,enclosure_length / 2,enclosure_height - 14]) {
-          radialVents(2, 6, 2, 3, enclosure_radius + 20);
+        translate([enclosure_width / 2,enclosure_length / 2,enclosure_height - 16]) {
+          radialVents(2, 6, 2, 2, enclosure_radius + 20, 22, 28);
+        }
+        translate([enclosure_width / 2,enclosure_length / 2,enclosure_height - 22]) {
+          radialVents(2, 6, 2, 5, enclosure_radius + 20, 110, 131);
         }
     }
 }
 
+module platform() {
+    holder_start = enclosure_width / 2;
+    translate([0,-14,0]) {
+        difference() {
+            holder();
+            translate([holder_start,0,0]) {
+                translate([2,5,4]) {
+                    #rotate(22, [1,0,0])cube([22,2,24]);
+                }
+                translate([-1,10,0]) {
+                    rotate(22, [1,0,0])cube([28,10,enclosure_height]);
+                }
+            }
+        }
+        
+    }
+}
+
+module holder() {
+    holder_start = enclosure_width / 2;
+    translate([holder_start,0,0])cube([26,14,8]);
+    translate([holder_start,-1,0])cube([3,8,enclosure_height - 4]);
+    translate([holder_start + 23,-1,0])cube([3,8,enclosure_height - 4]);
+    translate([2,-3,0])cube([enclosure_width - 4,2,enclosure_height - 4]);
+} 
+
 // Radial vents
 // ventSpacing in mm
 // horizontalSpacing in degrees (divisible by 360)
-module radialVents(verticalSpacing, horizontalSpacing, size, numRows, ventRadius) {
+module radialVents(verticalSpacing, horizontalSpacing, size, numRows, ventRadius, startAngle, finishAngle) {
     for ( m = [0 : numRows] ){
-        for ( k = [110 : 120] ){
+        for ( k = [startAngle : finishAngle] ){
             // Rotate by 45 degrees to avoid needing support when printing
             translate([0,0,m * verticalSpacing + 4]) {
                 offset = horizontalSpacing / 2;
