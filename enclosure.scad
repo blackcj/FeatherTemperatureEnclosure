@@ -1,10 +1,10 @@
 // Global config variables
-enclosure_height = 28;
+enclosure_height = 30;
 enclosure_length = 92;
 enclosure_width = 66;
 enclosure_radius = 40;
 wall_thickness = 1.6;
-$fn = 64; // curved resolution (used for cylinders and spheres)
+$fn = 48; // curved resolution (used for cylinders and spheres)
 
 
 // Position all of the modules
@@ -15,6 +15,10 @@ difference() {
     translate([34.9,-1,7.1])cube([8.2,4,3.5]);
     // Hole on the bottom of the enclosure
     translate([30,10,-1])rcube([18,32,10], 5);
+    // Opening for power switch
+    translate([enclosure_width - wall_thickness - 1,enclosure_length - 38,4]) {
+        cube([5,19,13]);
+    }
 }
 
 difference() {
@@ -95,8 +99,8 @@ module buildBase() {
         translate([enclosure_width / 2,enclosure_length / 2,enclosure_height - 16]) {
           radialVents(2, 6, 2, 2, enclosure_radius + 20, 22, 28);
         }
-        translate([enclosure_width / 2,enclosure_length / 2,enclosure_height - 22]) {
-          radialVents(2, 6, 2, 5, enclosure_radius + 20, 110, 131);
+        translate([enclosure_width / 2,enclosure_length / 2,enclosure_height - 25]) {
+          radialVents(2, 6, 2, 6, enclosure_radius + 20, 116, 127);
         }
     }
 }
@@ -110,6 +114,9 @@ module platform() {
                 translate([2,5,4]) {
                     #rotate(22, [1,0,0])cube([22,2,24]);
                 }
+                translate([3,-5,enclosure_height - 14]) {
+                    rotate(22, [1,0,0])cube([20,10,6]);
+                }
                 translate([-1,10,0]) {
                     rotate(22, [1,0,0])cube([28,10,enclosure_height]);
                 }
@@ -122,9 +129,9 @@ module platform() {
 module holder() {
     holder_start = enclosure_width / 2;
     translate([holder_start,0,0])cube([26,14,8]);
-    translate([holder_start,-1,0])cube([3,8,enclosure_height - 4]);
-    translate([holder_start + 23,-1,0])cube([3,8,enclosure_height - 4]);
-    translate([2,-3,0])cube([enclosure_width - 4,2,enclosure_height - 4]);
+    translate([holder_start,-1,0])cube([3,8,enclosure_height - 8]);
+    translate([holder_start + 23,-1,0])cube([3,8,enclosure_height - 8]);
+    translate([1,-3,0])cube([enclosure_width - 2,2,enclosure_height - 8]);
 } 
 
 // Radial vents

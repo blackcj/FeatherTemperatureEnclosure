@@ -19,6 +19,16 @@ Enclosure built for use with the [Particle mesh](https://www.particle.io/mesh/) 
 
 ## Versions
 
+### v0.4
+
+![Render v0.4](images/render_v0.4.png)
+
+Added a slot for a small sensor to fit into. Expanded the size to accomodate the space for the sensor and power switch.
+
+**Settings**
+
+Same as v0.1
+
 ### v0.3
 
 ![Render v0.3](images/render_v0.3.png)
