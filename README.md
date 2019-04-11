@@ -17,7 +17,15 @@ Enclosure built for use with the [Particle mesh](https://www.particle.io/mesh/) 
 - Ability to press reset buttons without opening the enclosure
 - Screw mounts
 
-## Versions
+## Interior Support
+
+### v0.1
+
+![Interior v0.1](images/interior_v0.1.png)
+
+Added interior support to keep battery and Photon core in place.
+
+## Enclosure
 
 ### v0.4
 
