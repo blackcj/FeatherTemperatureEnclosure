@@ -6,7 +6,7 @@ enclosure_radius = 40;
 wall_thickness = 1.6;
 $fn = 48; // curved resolution (used for cylinders and spheres)
 
-bottomLayer();
+//bottomLayer();
 interiorSupport();
 
 // Position all of the modules
@@ -39,58 +39,8 @@ module bottomLayer() {
     }
 }
 
-module interiorSupport() {
-   difference() {
-        translate([30,4.1,0]) {
-            featherSupport();
-        }
-        translate([30,4.1,1.19 * 2]) {
-            featherScrew(1.3);
-        }
-        translate([20,-1.1,-1]) {
-            cube([41,wall_thickness+1,enclosure_height + 2]);
-        }
-    }
-    translate([27,wall_thickness +0.5,0]) {
-        rotate(90, [0,0,1]) {
-            batteryHolderTop();
-        }
-    }
-    difference() {
-        translate([wall_thickness + 0.2,wall_thickness + 0.2,20]) {
-            rcube2([enclosure_width - wall_thickness * 2 - 0.4, enclosure_length - wall_thickness * 2 - 15,2], 10);
-          inner_height = enclosure_height;
-          inner_radius = enclosure_radius - (wall_thickness * 2);
-          //cylinder(h = inner_height, r = inner_radius, center = false);
-        }
-        translate([26,5,-1])rcube2([31,42,30], 5);
-        translate([35,53,-1])cube([22,28,30], 5);
-    }
-}
-
 translate([27.6,wall_thickness,10]) {
-    #featherBoard();
-}
-
-module batteryHolderTop() {
-    difference() {
-        translate([4,1,11]) {
-            cube([69.46, 22, 11]);
-        }
-        translate([1,12,12]) {
-            rotate(90, [0,0,1]) {
-                rotate(90, [1,0,0]) {
-                    #cylinder(r=9.35, h=71);
-                }
-            }
-        }
-        translate([69.5,-1,10]) {
-            cube([2.5,8,8]);
-        }
-        translate([2,-1,6]) {
-            //cube([2.5,8,6]);
-        }
-    }
+    //featherBoard();
 }
 
 module batteryHolderBottom() {
@@ -247,12 +197,6 @@ module featherFriction(pegRadius) {
     translate([17.78,0,0])frictionmount(pegRadius);
 }
 
-// Interior support bar
-module featherSupport() {
-    translate([0,45.72,1])cylinder(r=2, h=21);;
-    translate([17.78,45.72,1])cylinder(r=2, h=21);;
-}
-
 // Screw mount spaced for a feather board
 module featherScrew(pegRadius) {
     translate([0,0,0])screwmountM25();
@@ -280,7 +224,7 @@ module screwmountM25() {
     difference() {
         cylinder(r=2.5, h=10);
         translate([0,0,4]) {
-            #cylinder(r=1.2, h=9);
+            cylinder(r=1.2, h=9);
         }
     }
 }
@@ -304,3 +248,60 @@ module frictionmount(pegRadius) {
     cylinder(r=2.5, h=10);
     cylinder(r=pegRadius, h=14);
 }
+
+module interiorSupport() {
+   difference() {
+        translate([30,4.1,0]) {
+            featherSupport();
+        }
+        translate([30,4.1,1.19]) {
+            featherScrew(1.3);
+        }
+        translate([20,-1.1,-1]) {
+            cube([41,wall_thickness+1,enclosure_height + 2]);
+        }
+    }
+    translate([27,wall_thickness +0.5,0]) {
+        rotate(90, [0,0,1]) {
+            batteryHolderTop();
+        }
+    }
+    difference() {
+        translate([wall_thickness + 0.2,wall_thickness + 0.2,22]) {
+            rcube2([enclosure_width - wall_thickness * 2 - 0.6, enclosure_length - wall_thickness * 2 - 13.5,2], 10);
+          inner_height = enclosure_height;
+          inner_radius = enclosure_radius - (wall_thickness * 2);
+        }
+        translate([26,5,-1])rcube2([25.5,42.8,30], 1);
+        translate([35,53,-1])rcube([22,28,30], 1);
+    }
+    translate([enclosure_width - 7,7,3])cylinder(r=2, h=21);
+}
+
+module batteryHolderTop() {
+    difference() {
+        translate([4,1,11]) {
+            cube([69.46, 22, 11]);
+        }
+        translate([1,12,12]) {
+            rotate(90, [0,0,1]) {
+                rotate(90, [1,0,0]) {
+                    #cylinder(r=9.35, h=71);
+                }
+            }
+        }
+        translate([68,-1,10]) {
+            cube([6,8,8]);
+        }
+        translate([2,-1,6]) {
+            //cube([2.5,8,6]);
+        }
+    }
+}
+
+// Interior support bar
+module featherSupport() {
+    translate([0,45.72,3])cylinder(r=2, h=21);
+    translate([17.78,45.72,3])cylinder(r=2, h=21);
+}
+
