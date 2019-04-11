@@ -6,41 +6,94 @@ enclosure_radius = 40;
 wall_thickness = 1.6;
 $fn = 48; // curved resolution (used for cylinders and spheres)
 
+bottomLayer();
+interiorSupport();
 
 // Position all of the modules
+module bottomLayer() {
+    difference() {
+        buildBase();
+        // Micro usb slot
+        translate([34.9,-1,7.1])cube([8.2,4,3.5]);
+        // Hole on the bottom of the enclosure
+        translate([30,10,-1])rcube([18,32,10], 5);
+        // Opening for power switch
+        translate([enclosure_width - wall_thickness - 1,enclosure_length - 38,4]) {
+            cube([5,19,13]);
+        }
+    }
 
-difference() {
-    buildBase();
-    // Micro usb slot
-    translate([34.9,-1,7.1])cube([8.2,4,3.5]);
-    // Hole on the bottom of the enclosure
-    translate([30,10,-1])rcube([18,32,10], 5);
-    // Opening for power switch
-    translate([enclosure_width - wall_thickness - 1,enclosure_length - 38,4]) {
-        cube([5,19,13]);
+    difference() {
+        translate([30,4.1,0]) {
+            featherScrew(1.1);
+        }
+        translate([20,-1.1,-1]) {
+            cube([41,wall_thickness+1,enclosure_height + 2]);
+        }
+    }
+
+    translate([27,wall_thickness +0.5,0]) {
+        rotate(90, [0,0,1]) {
+            batteryHolderBottom();
+        }
     }
 }
 
-difference() {
-    translate([30,4.1,0]) {
-        featherScrew();
+module interiorSupport() {
+   difference() {
+        translate([30,4.1,0]) {
+            featherSupport();
+        }
+        translate([30,4.1,1.19 * 2]) {
+            featherScrew(1.3);
+        }
+        translate([20,-1.1,-1]) {
+            cube([41,wall_thickness+1,enclosure_height + 2]);
+        }
     }
-    translate([20,-1.1,-1]) {
-        cube([41,wall_thickness+1,enclosure_height + 2]);
+    translate([27,wall_thickness +0.5,0]) {
+        rotate(90, [0,0,1]) {
+            batteryHolderTop();
+        }
     }
-}
-
-translate([27,wall_thickness +0.5,0]) {
-    rotate(90, [0,0,1]) {
-        batteryHolder();
+    difference() {
+        translate([wall_thickness + 0.2,wall_thickness + 0.2,20]) {
+            rcube2([enclosure_width - wall_thickness * 2 - 0.4, enclosure_length - wall_thickness * 2 - 15,2], 10);
+          inner_height = enclosure_height;
+          inner_radius = enclosure_radius - (wall_thickness * 2);
+          //cylinder(h = inner_height, r = inner_radius, center = false);
+        }
+        translate([26,5,-1])rcube2([31,42,30], 5);
+        translate([35,53,-1])cube([22,28,30], 5);
     }
 }
 
 translate([27.6,wall_thickness,10]) {
-    //featherBoard();
+    #featherBoard();
 }
 
-module batteryHolder() {
+module batteryHolderTop() {
+    difference() {
+        translate([4,1,11]) {
+            cube([69.46, 22, 11]);
+        }
+        translate([1,12,12]) {
+            rotate(90, [0,0,1]) {
+                rotate(90, [1,0,0]) {
+                    #cylinder(r=9.35, h=71);
+                }
+            }
+        }
+        translate([69.5,-1,10]) {
+            cube([2.5,8,8]);
+        }
+        translate([2,-1,6]) {
+            //cube([2.5,8,6]);
+        }
+    }
+}
+
+module batteryHolderBottom() {
     difference() {
         translate([0,1,1]) {
             cube([73.46, 22, 11]);
@@ -58,6 +111,17 @@ module batteryHolder() {
         translate([2,-1,6]) {
             //cube([2.5,8,6]);
         }
+    }
+}
+
+module rcube2(size, radius) {
+    // rcube module found here: https://www.prusaprinters.org/parametric-design-in-openscad/
+    hull() {
+        translate([radius, radius]) cylinder(r = radius, h = size[2]);
+        translate([size[0] - radius, radius]) cylinder(r = radius, h = size[2]);
+        translate([size[0] - 1, size[1] - 1]) cylinder(r = 1, h = size[2]);
+        translate([1, size[1] - 1]) cylinder(r = 1, h = size[2]);
+        //translate([1, size[1] - 1]) cylinder(r = 1, h = size[2]);
     }
 }
 
@@ -81,17 +145,8 @@ module buildBase() {
     
     // Cylinder with a smaller cylinder cut out of it
     difference() {
-        rcube([enclosure_width,enclosure_length,enclosure_height], 10);
 
-        //cylinder(h = enclosure_height, r = enclosure_radius);
-        // Make the cylinder hollow
-        translate([wall_thickness,wall_thickness,wall_thickness]) {
-            rcube([enclosure_width - wall_thickness * 2, enclosure_length - wall_thickness * 2,enclosure_height], 10);
-          inner_height = enclosure_height;
-          inner_radius = enclosure_radius - (wall_thickness * 2);
-          //cylinder(h = inner_height, r = inner_radius, center = false);
-        }
-
+        outerWall();
         // Flat back for power hookup
         translate([enclosure_radius - 5,-10,5]) {
           //cube([8,20,7]);
@@ -103,6 +158,22 @@ module buildBase() {
           radialVents(2, 6, 2, 6, enclosure_radius + 20, 116, 127);
         }
     }
+}
+
+module outerWall() {
+     difference() {
+        rcube([enclosure_width,enclosure_length,enclosure_height], 10);
+
+        //cylinder(h = enclosure_height, r = enclosure_radius);
+        // Make the cylinder hollow
+        translate([wall_thickness,wall_thickness,wall_thickness]) {
+            rcube([enclosure_width - wall_thickness * 2, enclosure_length - wall_thickness * 2,enclosure_height], 10);
+          inner_height = enclosure_height;
+          inner_radius = enclosure_radius - (wall_thickness * 2);
+          //cylinder(h = inner_height, r = inner_radius, center = false);
+        }
+    }
+    
 }
 
 module platform() {
@@ -176,11 +247,17 @@ module featherFriction(pegRadius) {
     translate([17.78,0,0])frictionmount(pegRadius);
 }
 
+// Interior support bar
+module featherSupport() {
+    translate([0,45.72,1])cylinder(r=2, h=21);;
+    translate([17.78,45.72,1])cylinder(r=2, h=21);;
+}
+
 // Screw mount spaced for a feather board
-module featherScrew() {
+module featherScrew(pegRadius) {
     translate([0,0,0])screwmountM25();
-    translate([0,45.72,0])frictionmount(1.1);
-    translate([17.78,45.72,0])frictionmount(1.1);
+    translate([0,45.72,0])frictionmount(pegRadius);
+    translate([17.78,45.72,0])frictionmount(pegRadius);
     translate([17.78,0,0])screwmountM25();
 }
 
@@ -224,6 +301,6 @@ module frictionmount(pegRadius) {
         }
     }
     cylinder(r=5, h=3);
-    cylinder(r=2.5, h=11);
+    cylinder(r=2.5, h=10);
     cylinder(r=pegRadius, h=14);
 }
